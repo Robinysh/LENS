@@ -1,0 +1,23 @@
+deterministic: False
+activations: Tanh
+batch_size: 2
+class_identifier: regression_metric_multi_ref
+dropout: 0.5
+encoder_learning_rate: 1.0e-05
+encoder_model: RoBERTa
+final_activation: null
+hidden_sizes:
+- 384
+keep_embeddings_frozen: true
+layer: mix
+layerwise_decay: 0.95
+learning_rate: 3.1e-05
+load_weights_from_checkpoint: null
+nr_frozen_epochs: 0.3
+optimizer: AdamW
+pool: avg
+pretrained_model: roberta-large
+topk: 3
+train_data: /srv/share5/mmaddela3/metrics_project/adaptive_metrics/data/simplification/annotations_24_systems/dataset/train_grouped_refs.csv
+validation_data: /srv/share5/mmaddela3/metrics_project/adaptive_metrics/data/simplification/annotations_24_systems/dataset/valid_grouped_refs.csv
+strict: False
