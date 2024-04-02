@@ -25,7 +25,7 @@ import warnings
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
-import pytorch_lightning as ptl
+import lightning as ptl
 import torch
 import transformers
 from lens.encoders import str2encoder
@@ -515,7 +515,10 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
             collate_fn=self.prepare_for_inference,
             num_workers=num_workers,
         )
-        accelerator = accelerator if gpus > 1 else None
+        if gpus == 1:
+            accelerator = 'gpu'
+        else:
+            accelerator = 'cpu'
 
         warnings.filterwarnings(
             "ignore",
@@ -524,7 +527,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
         )
         if progress_bar:
             trainer = ptl.Trainer(
-                gpus=gpus,
+                devices=gpus,
                 deterministic=True,
                 logger=False,
                 callbacks=[PredictProgressBar()],
@@ -533,7 +536,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
             )
         else:
             trainer = ptl.Trainer(
-                gpus=gpus,
+                devices=gpus,
                 deterministic=True,
                 logger=False,
                 progress_bar_refresh_rate=0,
