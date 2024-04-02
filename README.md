@@ -1,5 +1,6 @@
 # LENS
 
+### This fork updates pytorch lightning and torch version dependencies
 
 The repo contains the datasets and the metric checkpoints from our paper: [LENS: A Learnable Evaluation Metric for Text Simplification](https://arxiv.org/abs/2212.09739)
 
