@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from icecream import ic
 # Copyright (C) 2020 Unbabel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -525,6 +526,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
             category=UserWarning,
             message=".*Consider increasing the value of the `num_workers` argument` .*",
         )
+        '''
         if progress_bar:
             trainer = ptl.Trainer(
                 devices=gpus,
@@ -539,11 +541,11 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
                 devices=gpus,
                 deterministic=False,
                 logger=False,
-                progress_bar_refresh_rate=0,
+                enable_progress_bar=False,
                 accelerator=accelerator,
                 max_epochs=-1
             )
-
+        '''
         # TODO:
         # Remove this upon resolution of:
         # https://github.com/PyTorchLightning/pytorch-lightning/discussions/11392
@@ -576,9 +578,13 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
             return mean_scores, std_scores, sum(mean_scores) / len(mean_scores)
 
         else:
-            predictions = trainer.predict(
-                self, dataloaders=dataloader, return_predictions=True
-            )
+            predictions = []
+            for batch in dataloader:
+                batch = {k: v.to(self.device) for k, v in batch.items()}
+                predictions.append(self.predict_step(batch))
+            #predictions = trainer.predict(
+            #    self, dataloaders=dataloader, return_predictions=True
+            #)
             predictions = torch.cat(predictions, dim=0).tolist()
             if length_batching and gpus < 2:
                 unsorted_predictions = [None for _ in range(len(samples))]

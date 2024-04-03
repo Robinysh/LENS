@@ -10,7 +10,7 @@ class LENS:
 
 
     def score(self, complex, simplified, references,
-              batch_size=16, gpus=1):
+              batch_size=16, gpus=1, verbose=False):
 
         all_data = []
         for com, hyp, refs in zip(complex, simplified, references):
@@ -18,7 +18,8 @@ class LENS:
                 data = {"src": com.lower(), "mt": hyp.lower(), "ref": ref.lower()}
                 all_data.append(data)
 
-        all_scores, _ = self.model.predict(all_data, batch_size=batch_size, gpus=gpus)
+        all_scores, _ = self.model.predict(all_data, batch_size=batch_size,
+                                           gpus=gpus, progress_bar=verbose)
 
         ind = 0
         scores = []
